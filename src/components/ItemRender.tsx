@@ -6,7 +6,11 @@ import { ITEM_GRAPHICS } from "../const/Graphics";
 import { toFixed4 } from "../utils/float";
 import StringUtils from "../utils/string";
 
-const StyledItemRender = styled.div`
+type StyledItemRenderProps = {
+  $small?: boolean
+}
+
+const StyledItemRender = styled.div<StyledItemRenderProps>`
   padding: 0.5rem;
   background: #cccbcb;
   border-radius: 5px;

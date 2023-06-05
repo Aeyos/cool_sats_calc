@@ -6,7 +6,11 @@ import { MACHINE_GRAPHICS } from "../const/Graphics";
 import { toFixed4 } from "../utils/float";
 import StringUtils from "../utils/string";
 
-const StyledMachineRender = styled.div`
+type StyledMachineRenderProps = {
+  $small: boolean,
+}
+
+const StyledMachineRender = styled.div<StyledMachineRenderProps>`
   padding: 0.5rem;
   /* background: linear-gradient(0deg, #4d4d4d, #333); */
   background: #cccbcb;
@@ -57,7 +61,7 @@ function MachineRender({
   machine,
   amount,
   clock,
-  small,
+  small = false,
   inputRatios = [],
   outputRatios
 }: ItemRenderProps) {

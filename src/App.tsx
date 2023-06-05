@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
 import AssembliesRender from "./components/AssembliesRender";
 import { Item } from "./const/Enums";
 import RECIPES, { ALTERNATE_RECIPES } from "./const/Recipes";
@@ -16,13 +16,13 @@ import { Recipe } from "./models/Recipe";
 
 const defaultItemType =
   window.localStorage.getItem("app.form.values.itemType") ??
-  Item.AutomatedWiring;
+  Item.AutomatedWiring.toString();
 const defaultAmount =
   window.localStorage.getItem("app.form.values.amount") ?? "10";
 
 const options = Object.keys(RECIPES)
   .map((key) => ({
-    label: StringUtils.separateCamelCase(Item[key]),
+    label: StringUtils.separateCamelCase(Item[+key]),
     value: key
   }))
   .sort((a, b) => a.label.localeCompare(b.label));
@@ -34,13 +34,15 @@ const alternateRecipesOptions = Object.keys(ALTERNATE_RECIPES)
   }))
   .sort((a, b) => a.label.localeCompare(b.label));
 
+const defaultCalculation = new Calculation(+defaultItemType, +defaultAmount)
+
 export default function App() {
   const [values, setValues] = useState({
     itemType: defaultItemType,
     amount: defaultAmount,
     alternateRecipe: Object.keys(ALTERNATE_RECIPES)[0]
   });
-  const [calculation, setCalculation] = useState<Calculation>(null);
+  const [calculation, setCalculation] = useState<Calculation>(defaultCalculation);
   const [alternateRecipes, setAlternateRecipes] = useState<Recipe[]>([]);
   const update = useHackyUpdate();
 
@@ -61,7 +63,7 @@ export default function App() {
     setCalculation(calculation);
   }
 
-  function handleChange(evt) {
+  function handleChange(evt: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     console.log({ evt, value: evt.target.value });
     setValues({
       ...values,

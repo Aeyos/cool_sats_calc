@@ -4,8 +4,8 @@ enum Item {
   CoalOre,
   IronOre,
   CopperOre,
-  CrudeOil,
   QuartzCrystal,
+  CrudeOil,
   // INGOT
   Concrete,
   IronIngot,
@@ -24,6 +24,8 @@ enum Item {
   SteelPipe,
   // Plastic
   EmptyCanister,
+  // Quartz
+  Silica,
 
   // LEVEL 2 CONSTUCTOR
   Screws,
@@ -48,8 +50,6 @@ enum Item {
   EncasedIndustrialBeam,
   // Plastic
   CircuitBoard,
-  // Quartz
-  Silica,
 
   // LEVEL 2 ASSEMBLER
   ModularFrame,

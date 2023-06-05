@@ -4,10 +4,14 @@ import COLORS from "../const/Colors";
 type SelectProps = {
   children: React.ReactNode;
   disabled?: boolean;
-  onClick: (evt: number) => void;
+  onClick: (evt: any) => void;
 };
 
-const StyledButton = styled.button`
+type StyledButtonProps = {
+  $disabled?: boolean,
+}
+
+const StyledButton = styled.button<StyledButtonProps>`
   appearance: none;
   border: none;
   border-radius: 0;

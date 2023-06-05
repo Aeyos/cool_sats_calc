@@ -21,6 +21,7 @@ export class Calculation {
     this.finalProductAmount = amount;
     this.provisions = [];
     this.alternateRecipes = [];
+    this.assemblies = [];
     const stack = this.calculateInputs(
       this.finalProduct,
       this.finalProductAmount
@@ -35,7 +36,7 @@ export class Calculation {
     recipeStack: { [key: number]: number } = {}
   ) {
     let recipe: Recipe = this.alternateRecipes.includes(item)
-      ? ALTERNATE_RECIPES[item]
+      ? this.getAlternateRecipe(item)
       : RECIPES[item];
     console.log({
       recipe,
@@ -68,7 +69,7 @@ export class Calculation {
 
     Object.entries(stack).forEach(([item, totalAmount]: [string, number]) => {
       const recipe: Recipe = this.alternateRecipes.includes(+item)
-        ? ALTERNATE_RECIPES[+item]
+        ? this.getAlternateRecipe(+item)
         : RECIPES[+item];
       const machineCount = recipe.machinesFor(+item, totalAmount);
       this.assemblies.push(new Assembly(recipe, machineCount));
@@ -89,7 +90,7 @@ export class Calculation {
     this.assembliesToString().forEach(console.log);
   }
 
-  removeAssembly(index) {
+  removeAssembly(index: number) {
     const assembly: Assembly = this.assemblies[index];
     const meta = assembly.getMachineMetadata();
 
@@ -100,8 +101,14 @@ export class Calculation {
     });
   }
 
+  getAlternateRecipe(item: Item) {
+    const recipe = Object.values(ALTERNATE_RECIPES).find(recipe => recipe.outputs[0] == item);
+    if (!recipe) throw Error(`Cannot find alternate recipe for ${Item[item]}, make sure item has alternate recipe with 'hasAlternateRecipe' first.`)
+    return recipe;
+  }
+
   hasAlternateRecipe(item: Item) {
-    return ALTERNATE_RECIPES[item] != null;
+    return Object.values(ALTERNATE_RECIPES).some(recipe => recipe.outputs[0] == item);
   }
 
   useAlternateRecipe(outputItem: Item) {

@@ -9,7 +9,7 @@ type AssembliesRenderProps = {
 };
 
 function AssembliesRender({ calculation, update }: AssembliesRenderProps) {
-  const removeAssembly = (index) => () => {
+  const removeAssembly = (index: number) => () => {
     calculation.removeAssembly(index);
     update();
   };
@@ -20,17 +20,17 @@ function AssembliesRender({ calculation, update }: AssembliesRenderProps) {
   };
 
   return calculation
-    ? calculation.assemblies.map((assembly, index) => (
-        <AssemblyRender
-          key={assembly.getMachineMetadata().output}
-          assembly={assembly}
-          hasAlternateRecipe={calculation.hasAlternateRecipe(
-            assembly.recipe.outputs[0]
-          )}
-          onRemoveClick={removeAssembly(index)}
-          onAlternateRecipeClick={alternateRecipe(assembly.recipe.outputs[0])}
-        />
-      ))
+    ? <>{calculation.assemblies.map((assembly, index) => (
+      <AssemblyRender
+        key={assembly.getMachineMetadata().output}
+        assembly={assembly}
+        hasAlternateRecipe={calculation.hasAlternateRecipe(
+          assembly.recipe.outputs[0]
+        )}
+        onRemoveClick={removeAssembly(index)}
+        onAlternateRecipeClick={alternateRecipe(assembly.recipe.outputs[0])}
+      />
+    ))}</>
     : null;
 }
 

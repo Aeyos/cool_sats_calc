@@ -10,6 +10,7 @@ const RECIPES: RecipeCollectionType = {
   [Item.CoalOre]: new Recipe([], [Item.CoalOre], Machine.MinerMk1, [60]),
   [Item.Limestone]: new Recipe([], [Item.Limestone], Machine.MinerMk1, [60]),
   [Item.CrudeOil]: new Recipe([], [Item.CrudeOil], Machine.Refinery, [120]),
+  [Item.QuartzCrystal]: new Recipe([], [Item.QuartzCrystal], Machine.MinerMk1, [60]),
   // INGOTS
   [Item.Concrete]: new Recipe(
     [Item.Limestone],
@@ -77,6 +78,13 @@ const RECIPES: RecipeCollectionType = {
     [Item.SteelPipe],
     Machine.Constructor,
     [30, 20]
+  ),
+  // Silica
+  [Item.Silica]: new Recipe(
+    [Item.QuartzCrystal],
+    [Item.Silica],
+    Machine.Constructor,
+    [22.5, 37.5]
   ),
   // PLASTIC
   [Item.Plastic]: new Recipe(
