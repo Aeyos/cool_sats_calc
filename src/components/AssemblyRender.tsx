@@ -13,7 +13,7 @@ const FlexCell = styled.div`
   justify-content: center;
   flex-direction: column;
   margin: auto 1rem;
-  z-index: 1;
+  z-index: 0;
 `;
 
 const Flex = styled.div`

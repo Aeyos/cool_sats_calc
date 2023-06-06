@@ -9,8 +9,8 @@ type OptionType = {
 type SelectProps = {
   options: OptionType[];
   name: string;
-  value: string;
-  onChange: (evt: ChangeEvent<HTMLSelectElement>) => void;
+  value?: string;
+  onChange?: (evt: ChangeEvent<HTMLSelectElement>) => void;
 };
 
 const StyledSelect = styled.select`
@@ -29,7 +29,7 @@ const StyledSelect = styled.select`
   background-position: calc(100% - 20px) calc(50% + 3px);
   padding-right: 4rem;
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
-  margin: 2rem 1rem 2rem 0;
+  border: 1px solid gray;
 
   &:active,
   &:focus {

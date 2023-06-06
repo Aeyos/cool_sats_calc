@@ -35,7 +35,7 @@ const StyledMachineRender = styled.div<StyledMachineRenderProps>`
     line-height: 1.5;
     padding: 0 0.5rem;
     font-size: 1.5rem;
-    z-index: 9999;
+    z-index: 0;
   }
   .item_render__amount {
     bottom: -0.25rem;

@@ -1,22 +1,34 @@
 import React from "react";
-import { Item } from "../const/Enums";
+import { Item, Machine } from "../const/Enums";
 import { Calculation } from "../models/Calculation";
+import { Recipe } from "../models/Recipe";
 import AssemblyRender from "./AssemblyRender";
 
 type AssembliesRenderProps = {
-  calculation: Calculation;
-  update: () => void;
+  itemType: string,
+  amount: string,
+  alternateRecipes: Recipe[],
+  providedItems: Item[],
+  lowestMachineLevel?: Machine
 };
 
-function AssembliesRender({ calculation, update }: AssembliesRenderProps) {
+const defaultCalculation = new Calculation(Item.AutomatedWiring, 15)
+
+function AssembliesRender({ itemType, amount, alternateRecipes, providedItems, lowestMachineLevel = Machine.MinerMk1 }: AssembliesRenderProps) {
+  const [calculation, setCalculation] = React.useState<Calculation>(defaultCalculation);
+
+  React.useEffect(() => {
+    if (calculation.finalProduct === +itemType && calculation.finalProductAmount === +amount) return
+
+    setCalculation(new Calculation(+itemType, +amount))
+  }, [itemType, amount])
+
   const removeAssembly = (index: number) => () => {
     calculation.removeAssembly(index);
-    update();
   };
 
   const alternateRecipe = (item: Item) => () => {
     calculation.useAlternateRecipe(item);
-    update();
   };
 
   return calculation

@@ -13,6 +13,7 @@ import useHackyUpdate from "./hooks/useHackyUpdate";
 import ProvisionsRender from "./components/ProvisionsRender";
 import AlternateRecipesRender from "./components/AlternateRecipesRender";
 import { Recipe } from "./models/Recipe";
+import Fixed from "./components/Fixed";
 
 const defaultItemType =
   window.localStorage.getItem("app.form.values.itemType") ??
@@ -27,42 +28,26 @@ const options = Object.keys(RECIPES)
   }))
   .sort((a, b) => a.label.localeCompare(b.label));
 
-const alternateRecipesOptions = Object.keys(ALTERNATE_RECIPES)
+const alternateRecipesOptions = [{
+  label: "Select an alternate recipe",
+  value: '',
+}].concat(Object.keys(ALTERNATE_RECIPES)
   .map((key) => ({
     label: StringUtils.separateCamelCase(key),
-    value: key
+    value: key,
   }))
-  .sort((a, b) => a.label.localeCompare(b.label));
-
-const defaultCalculation = new Calculation(+defaultItemType, +defaultAmount)
+  .sort((a, b) => a.label.localeCompare(b.label)));
 
 export default function App() {
+  // STATE
   const [values, setValues] = useState({
     itemType: defaultItemType,
     amount: defaultAmount,
     alternateRecipe: Object.keys(ALTERNATE_RECIPES)[0]
   });
-  const [calculation, setCalculation] = useState<Calculation>(defaultCalculation);
-  const [alternateRecipes, setAlternateRecipes] = useState<Recipe[]>([]);
-  const update = useHackyUpdate();
+  const [alternateRecipes, setAlternateRecipes] = useState<string[]>([]);
 
-  const calculateDisabled =
-    calculation &&
-    String(calculation.finalProduct) === values.itemType &&
-    String(calculation.finalProductAmount) === values.amount;
-
-  function calculate() {
-    const calculation = new Calculation(
-      values.itemType ? +values.itemType : 0,
-      values.amount ? +values.amount : 1
-    );
-
-    window.localStorage.setItem("app.form.values.itemType", values.itemType);
-    window.localStorage.setItem("app.form.values.amount", values.amount);
-
-    setCalculation(calculation);
-  }
-
+  // HANDLERS
   function handleChange(evt: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     console.log({ evt, value: evt.target.value });
     setValues({
@@ -71,52 +56,50 @@ export default function App() {
     });
   }
 
-  function addAlternateRecipe() {
-    console.log({
-      ALTERNATE_RECIPES,
-      valuesAl: values.alternateRecipe,
-      v: ALTERNATE_RECIPES[values.alternateRecipe]
-    });
-    setAlternateRecipes([
-      ...alternateRecipes,
-      ALTERNATE_RECIPES[values.alternateRecipe]
-    ]);
+  function handleAlternateRecipeAdd(evt: React.ChangeEvent<HTMLSelectElement>) {
+    setAlternateRecipes([...alternateRecipes, evt.target.value])
   }
 
-  useEffect(() => {
-    calculate();
-    /** @reason We only want to fire calculate on first render */
-    // eslint-disable-next-line
-  }, []);
+  // MEMO
+  const { filteredAlternateRecipes, alternateRecipesObject } = React.useMemo(() => ({
+    filteredAlternateRecipes: alternateRecipesOptions.filter(option => !alternateRecipes.includes(option.value)),
+    alternateRecipesObject: alternateRecipes.map(key => ALTERNATE_RECIPES[key]),
+  }), [alternateRecipes])
 
+  // COMPONENT
   return (
     <AppStyle>
-      <h1>Satisfactory Calculator</h1>
-      <Select
-        name="itemType"
-        onChange={handleChange}
-        options={options}
-        value={values.itemType}
-      />
-      <TextInput name="amount" onChange={handleChange} value={values.amount} />
-      <Button disabled={calculateDisabled} onClick={calculate}>
-        Calculate
-      </Button>
+      <Fixed>
+        <p>Satisfactory Calculator</p>
+        <Select
+          name="itemType"
+          onChange={handleChange}
+          options={options}
+          value={values.itemType}
+        />
+        <TextInput type="number" name="amount" onChange={handleChange} value={values.amount} />
+      </Fixed>
 
       <h2>Alternate Recipes</h2>
       <Select
         name="alternateRecipe"
-        onChange={handleChange}
-        options={alternateRecipesOptions}
-        value={values.alternateRecipe}
+        onChange={handleAlternateRecipeAdd}
+        options={filteredAlternateRecipes}
+        value=""
       />
-      <Button onClick={addAlternateRecipe}>Add</Button>
-      <AlternateRecipesRender alternateRecipes={alternateRecipes} />
+      {/* <Button onClick={addAlternateRecipe}>Add</Button> */}
+      <AlternateRecipesRender alternateRecipes={alternateRecipesObject} />
 
       <h2>Provided Items</h2>
 
       <h2>Factory</h2>
-      <AssembliesRender calculation={calculation} update={update} />
+      <AssembliesRender
+        itemType={values.itemType}
+        amount={values.amount}
+        alternateRecipes={[]}
+        providedItems={[]}
+        lowestMachineLevel={undefined}
+      />
     </AppStyle>
   );
 }

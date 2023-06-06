@@ -5,6 +5,7 @@ type SelectProps = {
   name: string;
   value: string;
   onChange: (evt: ChangeEvent<HTMLInputElement>) => void;
+  type?: 'text' | 'number';
 };
 
 const StyledTextInput = styled.input`
@@ -16,8 +17,9 @@ const StyledTextInput = styled.input`
   color: white;
   font-size: 1rem;
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
-  margin: 2rem 1rem 2rem 0;
   width: 3rem;
+  outline: 1px solid gray;
+  outline-offset: -1px;
 
   &:active,
   &:focus {
@@ -27,13 +29,13 @@ const StyledTextInput = styled.input`
   }
 `;
 
-function TextInput({ name, value, onChange }: SelectProps) {
+function TextInput({ name, value, onChange, type = "text" }: SelectProps) {
   return (
     <StyledTextInput
       name={name}
       onChange={onChange}
       value={value}
-      type="text"
+      type={type}
     />
   );
 }

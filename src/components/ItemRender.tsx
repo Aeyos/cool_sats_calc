@@ -33,7 +33,7 @@ const StyledItemRender = styled.div<StyledItemRenderProps>`
     line-height: 1.5;
     padding: 0 0.5rem;
     font-size: 1.5rem;
-    z-index: 9999;
+    z-index: 0;
   }
 
   & + & {
@@ -46,24 +46,29 @@ const StyledItemRender = styled.div<StyledItemRenderProps>`
       img {
         width: 32px;
       }
+
+  .item_render__amount {
+    font-size: 0.75rem;
+  }
     `}
 `;
 
 type ItemRenderProps = {
   item: Item;
   amount?: number;
+  label?: string;
   small?: boolean;
 };
 
-function ItemRender({ item, amount, small }: ItemRenderProps) {
+function ItemRender({ item, amount, label, small }: ItemRenderProps) {
   return (
     <StyledItemRender
       title={StringUtils.separateCamelCase(Item[item])}
       $small={small}
     >
       <img src={ITEM_GRAPHICS[item]} alt={Item[item]} />
-      {amount ? (
-        <span className="item_render__amount">{toFixed4(amount)}</span>
+      {amount || label ? (
+        <span className="item_render__amount">{label || toFixed4(amount)}</span>
       ) : null}
     </StyledItemRender>
   );
